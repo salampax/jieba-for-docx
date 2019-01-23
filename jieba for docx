@@ -1,0 +1,48 @@
+import jieba#這支程式的目的在於直接把doc檔轉換成txt檔之後用結巴進行分割，同時計算詞頻寫入csv
+import codecs
+import csv
+import docx
+import docx2txt 
+import os, sys
+path = "C:\\Users\\fhkf106006\\Desktop\\2018_21\\test"#使用雙斜線因為\U signals a extended Unicode codepoint escape.
+dirs = os.listdir( path )#讀入資料夾所有檔案存在dirs
+
+for file in dirs:
+    print (file)
+
+
+for file in dirs:
+    total = set()
+    totalList = list()
+    total.add("開始")
+    
+    text = docx2txt.process('C:\\Users\\fhkf106006\\Desktop\\2018_21\\test\\'+file)#讀入要切割的doc檔
+    fileObject = codecs.open(file+'.txt', 'w','utf-8')#將doc檔暫存的txt
+    fileObjectTextseg = codecs.open('textseg'+file+'.txt', 'w','utf-8')#切割後的txt
+    print(text)
+    fileObject.write(text)
+    fileObject.close()
+
+
+    content = open(file+'.txt', 'rb').read()#要切割的檔案
+
+    fd = open('count'+file+'.csv','w',encoding='utf-8-sig')
+
+    print ("Input：", content)
+
+    words = jieba.cut(content, cut_all=False)
+
+    for word in words: #寫入一個呈現切割狀況的txt
+        total.add(word)
+        totalList.append(word)
+    
+        print (word,end = "/")
+    
+    for n in totalList: #寫入計算詞頻的csv
+        qct = totalList.count(n)
+        qct = str(qct)
+        fileObjectTextseg.write(n+"/")
+        fd.write("%s,%s\n"%(n,qct))      
+    fileObjectTextseg.close()
+    fd.close()
+    
