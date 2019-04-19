@@ -6,12 +6,18 @@ import docx2txt
 import os, sys
 path = "C:\\Users\\fhkf106006\\Desktop\\2018_21\\test"#使用雙斜線因為\U signals a extended Unicode codepoint escape.
 dirs = os.listdir( path )#讀入資料夾所有檔案存在dirs
+doc_lists=[]
+dict={}
+#for file in dirs:
+#    print (file)
 
-for file in dirs:
-    print (file)
+# 只讀docx
+for i in dirs:
+    if os.path.splitext(i)[1] == ".docx":
+        doc_lists.append(i)
+        print(i)
 
-
-for file in dirs:
+for file in doc_lists:
     total = set()
     totalList = list()
     total.add("開始")
@@ -26,7 +32,7 @@ for file in dirs:
 
     content = open(file+'.txt', 'rb').read()#要切割的檔案
 
-    fd = open('count'+file+'.csv','w',encoding='utf-8-sig')
+    # fd = open('count'+file+'.csv','w',encoding='utf-8-sig')
 
     print ("Input：", content)
 
@@ -39,10 +45,29 @@ for file in dirs:
         print (word,end = "/")
     
     for n in totalList: #寫入計算詞頻的csv
-        qct = totalList.count(n)
-        qct = str(qct)
+        if n in dict:
+            dict[n]+=1
+        else:
+            dict[n]=1
+            
         fileObjectTextseg.write(n+"/")
-        fd.write("%s,%s\n"%(n,qct))      
+    #fd.write("%s\n"%(dict.keys()))
+    #fd.write("%s\n"%(dict.values()))
+    try:
+        with open('count'+file+'.csv', 'w', encoding='utf-8-sig',newline='') as csvf:
+            w = csv.writer(csvf)
+            w.writerow(['words', 'count'])
+            
+            for k,v in dict.items():
+                w.writerow([k,v])
+    except IOError:
+        print("I/O error") 
+    
+
+    
+        
+        
     fileObjectTextseg.close()
-    fd.close()
+    #fd.close()
+    
     
