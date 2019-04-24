@@ -62,6 +62,8 @@ for file in doc_lists:
                 w.writerow([k,v])
     except IOError:
         print("I/O error") 
+    # 計算每個文件的詞頻
+    dict.clear()
     
 
     
